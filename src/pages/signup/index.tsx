@@ -1,51 +1,49 @@
+
+
 import Head from 'next/head'
 import Image from 'next/image'
-import Link from 'next/link'
-
-import { AuthContext } from '@/contexts/AuthContext'
+import { FormEvent, useContext, useState } from 'react'
+import logoImg from '../../../public/newLogo.svg'
 
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-
-import logoImg from '../../public/newLogo.svg'
-
+import { AuthContext } from '@/contexts/AuthContext'
 import { canSSRGuest } from '@/utils/canSSRGuest'
-import { FormEvent, useContext, useState } from 'react'
+import Link from 'next/link'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 
 
 
 
+export default function SignUp() {
+  const { signUp } = useContext(AuthContext)
 
-export default function Home() {
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
 
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const { signIn } = useContext(AuthContext)
-
-
-  async function handleLogin(e: FormEvent) {
+  async function handleSignUp(e: FormEvent) {
     e.preventDefault();
 
-    if (email === '' || password === '') {
+    if (name === '' || email === '' || password === '') {
       toast.error('Preencha todos os campos')
       return;
     }
 
-    setLoading(true);
+    setLoading(true)
 
     const data = {
+      name,
       email,
       password
     }
 
-    // console.log(data);
-    await signIn(data)
+    await signUp(data)
 
     setLoading(false)
   }
@@ -53,7 +51,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Pizzaria Baguette - Faça seu login</title>
+        <title>Faça seu Cadastro agora!</title>
       </Head>
 
       <div className='min-h-[100vh] flex items-center justify-center flex-col'>
@@ -61,7 +59,17 @@ export default function Home() {
 
         <div className='mt-10 md:w-[600px] w-[90%] flex items-center justify-center flex-col p-[2rem 1.5rem]'>
 
-          <form className='w-[100%]' onSubmit={handleLogin}>
+          <form className='w-[100%]' onSubmit={handleSignUp}>
+
+            <h1 className='text-white flex items-center justify-center mb-4 md:text-4xl font-bold text-3xl'>Criando sua conta</h1>
+
+            <Input
+              placeholder='Digite seu nome'
+              type='text'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+
             <Input
               placeholder='Digite seu email'
               type='email'
@@ -87,7 +95,7 @@ export default function Home() {
             </Button>
           </form>
 
-          <Link href={'/signup'} className='mt-4 text-white hover:text-bgred'>Não possui conta? Cadastre-se</Link>
+          <Link href={'/'} className='mt-4 text-white hover:text-bgred'>Já possui conta? Faça login!</Link>
         </div>
       </div>
     </>
